@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 if (networkInfo != null && networkInfo.isConnected()) {
                     new DownloadTask().execute(stringUrl);
                 } else {
-                    Toast.makeText(getApplicationContext(), "No network connection available.", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "No network connection available.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -87,12 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout.LayoutParams rightGravityParams = new LinearLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        rightGravityParams.gravity = Gravity.RIGHT;
+        rightGravityParams.gravity = Gravity.END;
 
         Button btn2 = new Button(this);
         btn2.setText("Button2");
         linLayout.addView(btn2, rightGravityParams);
 
+        assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("My Activity");
     }
 
@@ -135,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 is = conn.getInputStream();
 
                 // Convert the InputStream into a string
-                String contentAsString = readIt(is, len);
-                return contentAsString;
+                return readIt(is, len);
 
                 // Makes sure that the InputStream is closed after the app is
                 // finished using it.
