@@ -99,8 +99,16 @@ public class MainActivity extends AppCompatActivity {
         rightGravityParams.gravity = Gravity.END;
 
         Button btn2 = new Button(this);
-        btn2.setText("Button");
+        btn2.setText("Goto Map");
         linLayout.addView(btn2, rightGravityParams);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("My Activity");
