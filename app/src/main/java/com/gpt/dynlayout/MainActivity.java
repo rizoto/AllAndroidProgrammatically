@@ -1,6 +1,7 @@
 package com.gpt.dynlayout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.*;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -28,11 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView resultTextView;
 
-    public TextView getResultTextView() {
+    private TextView getResultTextView() {
         return resultTextView;
     }
 
-    public void setResultTextView(TextView resultTextView) {
+    private void setResultTextView(TextView resultTextView) {
         this.resultTextView = resultTextView;
     }
 
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setResultTextView(tv);
 
         Button btn = new Button(this);
-        btn.setText("Button");
+        btn.setText("Download");
         linLayout.addView(btn, lpView);
 
         btn.setOnClickListener(new View.OnClickListener() {
@@ -81,8 +83,15 @@ public class MainActivity extends AppCompatActivity {
         leftMarginParams.leftMargin = 50;
 
         Button btn1 = new Button(this);
-        btn1.setText("Button1");
+        btn1.setText("GO to List");
         linLayout.addView(btn1, leftMarginParams);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ShowListActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         LinearLayout.LayoutParams rightGravityParams = new LinearLayout.LayoutParams(
@@ -90,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         rightGravityParams.gravity = Gravity.END;
 
         Button btn2 = new Button(this);
-        btn2.setText("Button2");
+        btn2.setText("Button");
         linLayout.addView(btn2, rightGravityParams);
 
         assert getSupportActionBar() != null;
@@ -147,9 +156,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         // Reads an InputStream and converts it to a String.
-        String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-            Reader reader = null;
-            reader = new InputStreamReader(stream, "UTF-8");
+        String readIt(InputStream stream, int len) throws IOException {
+            Reader reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[len];
             reader.read(buffer);
             return new String(buffer);
