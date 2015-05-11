@@ -2,8 +2,11 @@ package com.gpt.dynlayout;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v4.util.LruCache;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -11,7 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.content.res.Resources;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +40,11 @@ class FeedAdapter extends ArrayAdapter<String[]> {
     }
 
     public void loadBitmap(String urlKey, ImageView imageView) {
+        if(urlKey == null || urlKey == "" || urlKey.isEmpty() || urlKey == "null")
+        {
+            // wrong urlKey
+            return;
+        }
         final Bitmap bitmap = mCache.get(urlKey);
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
@@ -57,6 +67,18 @@ class FeedAdapter extends ArrayAdapter<String[]> {
                     s[2] = item.getString("imageHref");
                     if (!(s[0] == "null" && s[1] == "null" && s[2] == "null")) {
                         // at least one of them is not null
+                        if(s[0].equals("null"))
+                        {
+                            s[0] = "";
+                        }
+                        if(s[1].equals("null"))
+                        {
+                            s[1] = "";
+                        }
+                        if(s[2].equals("null"))
+                        {
+                            s[2] = null;
+                        }
                         add(s);
                     }
                 }
@@ -70,8 +92,8 @@ class FeedAdapter extends ArrayAdapter<String[]> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
 //        if(convertView != null) {
-//            TextView listText = (TextView)convertView.findViewById(listTextId);
-//            listText.setText(super.getItem(position)[0]);
+//            TextView titleTextView = (TextView)convertView.findViewById(listTextId);
+//            titleTextView.setText(super.getItem(position)[0]);
 ////            TextView listText1 = (TextView)convertView.findViewById(listText1Id);
 ////            listText1.setText(super.getItem(position)[1]);
 //            // show The Image
@@ -89,27 +111,32 @@ class FeedAdapter extends ArrayAdapter<String[]> {
 //            return convertView;
 //        }
 
-        LinearLayout itemLayout = new LinearLayout(getContext());
-        itemLayout.setOrientation(LinearLayout.VERTICAL);
-        itemLayout.setLayoutParams(new AbsListView.LayoutParams(
+        RelativeLayout itemLayout = new RelativeLayout(getContext());
+        AbsListView.LayoutParams relativeParams = new AbsListView.LayoutParams(
                 AbsListView.LayoutParams.MATCH_PARENT,
-                AbsListView.LayoutParams.WRAP_CONTENT));
+                AbsListView.LayoutParams.WRAP_CONTENT);
+        itemLayout.setLayoutParams(relativeParams);
         itemLayout.setId(itemLayoutId);
 
-        TextView listText = new TextView(getContext());
-        listText.setId(listTextId);
+        // Title Text View
+        TextView titleTextView = new TextView(getContext());
+        titleTextView.setId(listTextId);
+        RelativeLayout.LayoutParams relParamTitle = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        titleTextView.setText(super.getItem(position)[0]);
+        titleTextView.setTypeface(null, Typeface.BOLD_ITALIC);
+        titleTextView.setTextColor(Color.BLUE);
+        itemLayout.addView(titleTextView, relParamTitle);
 
-        itemLayout.addView(listText);
-        listText.setText(super.getItem(position)[0]);
 
         LinearLayout itemInnerLayout = new LinearLayout(getContext());
         itemInnerLayout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams innerParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,4f);
-        itemInnerLayout.setLayoutParams(innerParams);
 
+        itemInnerLayout.setLayoutParams(innerParams);
         itemInnerLayout.setId(itemInnerLayoutId);
+
 
         TextView listText1 = new TextView(getContext());
         listText1.setId(listText1Id);
@@ -127,6 +154,8 @@ class FeedAdapter extends ArrayAdapter<String[]> {
                 0,
                 AbsListView.LayoutParams.WRAP_CONTENT);
         imageViewParams.weight = 1f;
+        imageViewParams.gravity = Gravity.TOP;
+        imageView.setAdjustViewBounds(true);
         imageView.setLayoutParams(imageViewParams);
         itemInnerLayout.addView(imageView);
         // show The Image
@@ -139,7 +168,9 @@ class FeedAdapter extends ArrayAdapter<String[]> {
                 loadBitmap(super.getItem(position)[2], imageView);
             }
         }
-        itemLayout.addView(itemInnerLayout);
+        RelativeLayout.LayoutParams itemInnerRelLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        itemInnerRelLayoutParams.addRule(RelativeLayout.BELOW,listTextId);
+        itemLayout.addView(itemInnerLayout,itemInnerRelLayoutParams);
         return itemLayout;
     }
 }
