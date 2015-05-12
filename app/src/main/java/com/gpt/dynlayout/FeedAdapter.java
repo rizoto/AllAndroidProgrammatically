@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.view.Gravity;
@@ -50,7 +52,11 @@ class FeedAdapter extends ArrayAdapter<String[]> {
             imageView.setImageBitmap(bitmap);
         } else {
             DownloadImageTask task = new  DownloadImageTask(imageView,mCache);
-            task.execute(urlKey);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, urlKey);
+            else
+                task.execute(urlKey);
+
         }
     }
 

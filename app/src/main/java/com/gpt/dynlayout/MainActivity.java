@@ -57,12 +57,14 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tv = new TextView(this);
         tv.setText("TextView");
+        tv.setTag("TextView");
         tv.setLayoutParams(lpView);
         linLayout.addView(tv);
         setResultTextView(tv);
 
         Button btn = new Button(this);
         btn.setText("Download");
+        btn.setTag("Download");
         linLayout.addView(btn, lpView);
 
         btn.setOnClickListener(new View.OnClickListener() {
