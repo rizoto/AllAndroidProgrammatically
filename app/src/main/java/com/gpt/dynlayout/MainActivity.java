@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button btn1 = new Button(this);
         btn1.setText("GO to List");
+        btn1.setTag("List");
         linLayout.addView(btn1, leftMarginParams);
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override

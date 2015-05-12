@@ -29,10 +29,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
+import static org.hamcrest.Matchers.startsWith;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -50,6 +52,11 @@ public class ActivityClickTest {
      * the activity under test. To get a reference to the activity you can use
      * the {@link ActivityTestRule#getActivity()} method.
      */
+    @SuppressWarnings("deprecation")
+    public ActivityClickTest() {
+        // This constructor was deprecated - but we want to support lower API levels.
+        super();
+    }
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
@@ -62,7 +69,15 @@ public class ActivityClickTest {
 
         onView(withText("TextView")).check(matches(isDisplayed()));
         onView(withText("Download")).perform(click());
-
         Thread.sleep(2000);
+        onView(withTagValue(is((Object)"TextView"))).check(matches(withText(containsString("Google"))));
+    }
+
+    @Test
+    public void click_listActivity() throws Throwable{
+        onView(withTagValue(is((Object) "List"))).check(matches(isDisplayed()));
+        //onView(withTagValue(is((Object) "List"))).perform(click());
+        //Thread.sleep(2000);
+        //onView(withTagValue(is((Object)"TextView"))).check(matches(withText(containsString("Google"))));
     }
 }
