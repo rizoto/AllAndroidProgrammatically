@@ -44,6 +44,6 @@ public class AnotherTest extends ActivityInstrumentationTestCase2<MainActivity> 
                 downloadButton.performClick();
             }
         });
-        // Thread.sleep(2000);
+        Thread.sleep(2000);
     }
 }

@@ -33,7 +33,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/imageView"
             android:layout_weight="1"
-            android:src="@drawable/american_beaver"
             android:adjustViewBounds="true"
             android:layout_gravity="top" />
 

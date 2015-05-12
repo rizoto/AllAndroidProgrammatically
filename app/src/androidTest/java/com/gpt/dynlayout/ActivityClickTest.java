@@ -57,12 +57,12 @@ public class ActivityClickTest {
     @Test
     public void click_sameActivity() throws Throwable{
         //onView(withTagValue(equalTo((Object)"TextView")));
-        View textView = mActivityRule.getActivity().getWindow().getDecorView().getRootView().findViewWithTag("1TextView1");
+        View textView = mActivityRule.getActivity().getWindow().getDecorView().getRootView().findViewWithTag("TextView");
         if (textView == null) throw new AssertionError();
 
-        onView(withText("TextView1")).check(matches(isDisplayed()));
+        onView(withText("TextView")).check(matches(isDisplayed()));
         onView(withText("Download")).perform(click());
 
-        Thread.sleep(10000);
+        Thread.sleep(2000);
     }
 }
