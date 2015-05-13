@@ -2,10 +2,12 @@ package com.gpt.dynlayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.squareup.leakcanary.RefWatcher;
+
 import io.fabric.sdk.android.Fabric;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +31,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+//class Cat {
+//}
+//class Box {
+//    Cat hiddenCat;
+//}
+//class Docker {
+//    static Box container;
+//}
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void setResultTextView(TextView resultTextView) {
         this.resultTextView = resultTextView;
+    }
+    // test memory leak
+    private static Drawable sBackground;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        RefWatcher refWatcher = LeakMonitorApp.getRefWatcher(this);
+//        refWatcher.watch(MainActivity.this);
     }
 
     @Override
@@ -53,11 +74,15 @@ public class MainActivity extends AppCompatActivity {
         // set LinearLayout as a root element of the screen
         setContentView(linLayout, linLayoutParam);
 
-        LayoutParams lpView = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LayoutParams lpView = new LayoutParams(LayoutParams.MATCH_PARENT, 100);
 
         TextView tv = new TextView(this);
         tv.setText("TextView");
         tv.setTag("TextView");
+        if (sBackground == null) {
+            sBackground = getResources().getDrawable(R.drawable.jimi_bitmap_full);
+        }
+        tv.setBackgroundDrawable(sBackground);
         tv.setLayoutParams(lpView);
         linLayout.addView(tv);
         setResultTextView(tv);
@@ -118,6 +143,24 @@ public class MainActivity extends AppCompatActivity {
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("My Activity");
+
+        // memory leak test
+//        Box box = new Box();
+//        Cat schrodingerCat = new Cat();
+//        box.hiddenCat = schrodingerCat;
+//        Docker.container = box;
+//        LeakMonitorApp.getRefWatcher(getApplicationContext()).watch(schrodingerCat);
+//        exampleOne();
+    }
+    private void exampleOne() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    SystemClock.sleep(1000);
+                }
+            }
+        }.start();
     }
 
     private class DownloadTask extends AsyncTask<String, Void, String> {

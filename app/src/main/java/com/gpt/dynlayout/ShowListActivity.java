@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import com.squareup.leakcanary.RefWatcher;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -71,10 +74,17 @@ public class ShowListActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = LeakMonitorApp.getRefWatcher(getApplicationContext());
+        refWatcher.watch(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // creating Layout
-        final LinearLayout listLayout = new LinearLayout(this);
+        final LinearLayout listLayout = new LinearLayout(getApplicationContext());
 
         ListView listView = new ListView(this);
         listLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -136,7 +146,7 @@ public class ShowListActivity extends AppCompatActivity {
             protected void onPostExecute(JSONObject jsonObject) {
                 super.onPostExecute(jsonObject);
                 if (listAdapter != null && jsonObject != null) {
-                    listAdapter.notifyDataSetInvalidated();
+                    //listAdapter.notifyDataSetInvalidated();
                     listAdapter.parseJson(json);
                     listAdapter.notifyDataSetChanged();
                 }
